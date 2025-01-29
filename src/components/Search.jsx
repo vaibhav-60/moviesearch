@@ -13,6 +13,7 @@ const Search = ({searchTerm, setSearchTerm}) => {
         />
       </div>
     </div>
+    
   )
 }
 
