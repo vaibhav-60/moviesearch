@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Search from "./components/Search";
 import Spinner from "./components/Spinner";
+import MovieCard from "./components/MovieCard";
 
 const API_BASE_URL =
-  "https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc";
+  "https://api.themoviedb.org/3";
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -23,9 +24,12 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchMovies = async () => {
+    const fetchMovies = async (query = "") => {
       try {
-        const endpoint = `${API_BASE_URL}`;
+        const endpoint = query 
+        ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+        : `${API_BASE_URL}/discover/movie?sort_by=popularity.desc`;
+        
         const response = await fetch(endpoint, API_OPTIONS);
 
         if (!response.ok) {
@@ -47,8 +51,8 @@ function App() {
         setLoading(false);
       }
     };
-    fetchMovies();
-  }, []);
+    fetchMovies(searchTerm);
+  }, [searchTerm]);
 
   return (
     <main>
@@ -72,9 +76,7 @@ function App() {
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <li key = {movie.id}className="text-white">
-                  {movie.title}
-                </li>
+                <MovieCard key={movie.id} movie = {movie} />
               ))}
             </ul>
           )}
